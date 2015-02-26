@@ -144,7 +144,8 @@ html.mm-blocking #mm-blocker {
       white-space: nowrap;
       overflow: hidden;
       color: inherit;
-      line-height: 20px;
+      line-height: 32px;
+      font-size: 20px;
       display: block;
       padding: 10px 10px 10px 20px;
       margin: 0; }
@@ -1202,7 +1203,7 @@ html.mm-opened.mm-light .mm-page {
     background: rgba(0, 0, 0, 0.03); }
 
 .mm-menu.mm-light .mm-search input {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(252, 247, 247, 0.1);
   color: rgba(0, 0, 0, 0.6); }
 .mm-menu.mm-light li.mm-noresults {
   color: rgba(0, 0, 0, 0.3); }

@@ -4,6 +4,7 @@
 <?php require_once("includes/variables.php"); ?>
 <?php
 
+
 if(isset($_POST['aboutme'])){
 			$id = $_SESSION['user_id'];
 			$aboutme = htmlentities(htmlspecialchars($_POST['aboutme']));
@@ -12,20 +13,105 @@ if(isset($_POST['aboutme'])){
 }
 
 
+if(isset($_POST['post_for']) && isset($_POST['subject_for'])){
+// 	$post_for = $_POST['post_for'];
+// 	$subject_for = $_POST['subject_for'];
+// 	echo "<script>$('#content').html('');</script>";
+// 	echo '<div class="widget-box ">';
+//     echo '    				<div class="widget-body">';
+//     echo '                   <div class="widget-main no-padding">';
+//     echo '                          <div class="dialogs">';                                                
+//     echo '     						<h3 style="font-family: Harlow Solid Italic;"><center>Newsfeed</center>';
+//     echo '                         <a href="#popupMenu" data-mini="true" data-rel="popup" data-role="button" data-inline="true" data-transition="slideup" data-icon="gear" data-theme="e">Sort By</a></h3>';                                        		
+
+//     echo '                         <div data-role="popup" id="popupMenu" data-theme="d">';
+//     echo '                                <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">';
+//     echo '                                     <li data-role="divider" data-theme="e">Sort by:</li>';
+//     echo '                                     <li>';
+//     echo '                                     <form method="post" name="sortbyall">';
+//     echo '                                     <input type="hidden" name="sortAll" value="all">';
+//     echo '                                     <button type="submit" name="submit2">All</button>';
+//     echo '                                     </form>';
+//     echo '                                     </li>';
+ 
+
+// if($row['yr'] == "first"){ $course_year = 1;}
+// if($row['yr'] == "second"){ $course_year = 2;}
+// if($row['yr'] == "third"){ $course_year = 3;}
+// if($row['yr'] == "fourth"){ $course_year = 4;}
+// $section = $row['section'];
+// $course = $row['course'];
+
+// if($row['course'] == "BS Information Technology major in Service Management"){$course2 = "ITSM";}
+// else if($row['course'] == "BS Computer Science"){ $course2 = "CSAD";}
+// else if($row['course'] == "Computer Network Administration") {$course2 = "CNA";}
+// $what = 0;
+// $arr_what = array();
+// $query4 = "SELECT * FROM tblsem_sched WHERE course_year ='$course_year' AND course = '$course' AND section = '$section'";
+// $result4 = @mysql_query($query4);
+// while($row4 = mysql_fetch_array($result4))
+// {
+//     if($row4['course'] == "BS Information Technology major in Service Management"){$course2 = "ITSM";}
+//     else if($row4['course'] == "BS Computer Science"){ $course2 = "CSAD";}
+//     else if($row4['course'] == "Computer Network Administration") {$course2 = "CNA";}
+
+//     $section = $row4['course_year'].'-'.$row4['section'].$course2;
+//     $subject = $row4['subject'];
+//     $query5 = "SELECT * FROM tblsubject WHERE id_subject ='$subject'";
+//     $result5 = @mysql_query($query5);
+//     $row5 = mysql_fetch_array($result5);
+//     $arr_what[$what] = $what;
+//     echo '<form method="post" id="sortby'.$what++.'">';    
+//     echo "<li>";
+//     echo '<input type="hidden" name="post_for" value="'.$section.'">';
+//     echo '<input type="hidden" name="subject_for" value="'.$row5['subject_desc'].'">';
+//     echo '                                  <li><button type="submit" name="submit2">'.$row5['subject_desc'].'</button></li>';
+//     echo '</form>';
+    
+
+// }
+
+//     echo '                                 </ul>';
+//     echo '                          </div>';
+//     echo '<div id="edit"></div>';
+
+// 	echo '                              <div class="itemdiv dialogdiv">';
+// 	echo '                              <div class="user">';
+// 	                                       echo '<img src="admin/upload/'.$image.'"/>';
+// 	echo '                               </div>';
+// 	echo '                                  <div class="body">';
+// 	echo '                                      <form method="post" id="posting">';
+// 	echo '                                           <div class="name">';
+// 	                                              echo '<a href="#">'.$name.'</a><span></span>';
+// 	echo '                                           </div>';
+// 	echo '                                     		<textarea style="font-size:14px;" name="post" placeholder="Write something here..."  required="required"></textarea>';
+		                                     	
+//                                                   echo '<input type="hidden" name="user_id" value="'.$row['id_student'].'">';
+//                                                   echo '<input type="hidden" name="level_user" value="'.$_SESSION['level_user'].'">'; 
+
+// 	echo '                                    		<button type="submit" name="submit" data-role="button" data-corners="false" data-theme="b" data-shadow="false" data-mini="true">POST</button>';
+// 	echo '	                                        </form>';
+// 	echo '                                        </div>';
+// 	echo '                                </div>';
+}
+
+
 if(isset($_POST['post']) && isset($_POST['level_user']) && isset($_POST['user_id']))
 {
-	    function add_post($user_id,$level_user,$post,$date_post){
-        $query = "INSERT INTO tblpost(id_user,level_user,post,date_post)
-        VALUES  ('$user_id','$level_user','$post','$date_post')";
+	    function add_post($user_id,$level_user,$post,$date_post,$post_for,$subject_for){
+        $query = "INSERT INTO tblpost(id_user,level_user,post,date_post,post_for,subject_for)
+        VALUES  ('$user_id','$level_user','$post','$date_post','$post_for','$subject_for')";
         $result = @mysql_query($query);
     	}
 
     	$user_id = $_POST['user_id'];
         $post = $_POST['post'];
         $level_user = $_POST['level_user'];
+        $post_for = $_POST['post_for'];
+        $subject_for = $_POST['subject_for'];
         $date_post = dateNow_db_format();
 
-        add_post($user_id,$level_user,$post,$date_post);
+        add_post($user_id,$level_user,$post,$date_post,$post_for,$subject_for);
 
         $query2 = "SELECT * FROM tblpost WHERE id_user = '$user_id' AND level_user = '$level_user' AND post = '$post' AND date_post = '$date_post'
         ORDER BY DATE_FORMAT(date_post, '%d') DESC,DATE_FORMAT(date_post, '%Y') DESC,DATE_FORMAT(date_post, '%m') DESC, DATE_FORMAT(date_post, '%H') DESC, DATE_FORMAT(date_post, '%i') DESC, DATE_FORMAT(date_post, '%s') DESC";
@@ -92,7 +178,13 @@ while($row2 = mysql_fetch_array($result2))
                                                     echo '   <div class="body">';
                                                     echo '       <div class="time">';
                                                     echo '           <i class="icon-time"></i>';
-                                                    echo '           <span class="green">4 sec</span>';
+                                                    if(formatDate($row2['date_post']) == formatDate(dateNow())){
+                                                        $time = formatTime($row2['date_post']);
+                                                    } 
+                                                    else {
+                                                        $time = formatDate($row2['date_post']);
+                                                    }
+                                                    echo '           <span class="green">'.$time.'</span>';
                                                     echo '       </div>';
 
                                                     echo '       <div class="name">';

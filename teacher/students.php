@@ -8,7 +8,7 @@
 <div id="content">
 <h3 style="font-family: Harlow Solid Italic;"><center>My Students</center></h3>                               
   
-        Records:
+  
 <?php
     if(isset($_POST['submit']))
     {
@@ -19,7 +19,6 @@
         $_SESSION['course'] = $_POST['course'];
         $_SESSION['teacher'] = $_POST['teacher'];
         $_SESSION['title'] = $_POST['title'];
-
         redirect_2("edit_grades.php");
     }
     $id = $_SESSION['teacher_id'];
@@ -32,6 +31,8 @@
         $result2 = @mysql_query($query2);
         $row2 = mysql_fetch_array($result2);    
         if($row['course'] == "BS Information Technology major in Service Management"){$course = "ITSM";}
+        else if($row['course'] == "BS Computer Science"){ $course = "CSAD";}
+        else if($row['course'] == "Computer Network Administration") {$course = "CNA";}
 
         echo "<form method='post'>";
         echo "<input type='hidden' name='id_sem_sched' value='".$row['id_sem_sched']."'>";
@@ -84,48 +85,6 @@
                     dragOpen    : true                  
                 });
 
-                $('div#aboutme').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#third').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#myschedule').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#addsched').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-<?php
-    $id = $_SESSION['teacher_id'];
-    $query = "SELECT id_sem_sched,subject,section,course_year,course,teacher FROM tblsem_sched WHERE teacher ='$id'";
-    $result = @mysql_query($query);
-    $a = 1;
-    while($row = mysql_fetch_array($result))
-    {
-        $section = "section".$a;
-        $a++;
-        echo "$('div#".$section."').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });";
-    }
-
-?>
        });
         </script>
         <script>
@@ -138,23 +97,7 @@
         <script src="../js/ajax_script.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-       
-        $(".mm-prev").click(function(){
-            <?php
-    $id = $_SESSION['teacher_id'];
-    $query = "SELECT id_sem_sched,subject,section,course_year,course,teacher FROM tblsem_sched WHERE teacher ='$id'";
-    $result = @mysql_query($query);
-    $a = 1;
-    while($row = mysql_fetch_array($result))
-    {
-        
-        $section = "section".$a;     
-        $a++;
-        echo "$('#".$section."').trigger('close');";
-    }
 
-?>
-        
-        });
+            $('.hidden').fadeIn(1000).removeClass('hidden');       
     });
 </script>

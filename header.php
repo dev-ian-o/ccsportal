@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1" />
 
 		<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
-
+		
 		<title>UMak CCS Portal</title>
 
 		<link type="text/css" rel="stylesheet" href="demo.css" />
@@ -103,11 +103,14 @@ echo	'		}';
 			    padding: 20px;
 			    text-align: center;
 			}
+			.hidden{
+				display: none;
+			}
 		</style>
 
 
 	</head>
-	<body>
+	<body class="hidden">
 		<div id="page">
 			<div id="header">
 				<a href="#menu"></a>

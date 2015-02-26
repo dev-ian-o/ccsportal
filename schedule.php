@@ -11,8 +11,11 @@ if($row['yr'] == "fourth"){ $course_year = 4;}
 $section = $row['section'];
 $course = $row['course'];
 
-    $query = "SELECT * FROM tblschedule ORDER BY DATE_FORMAT(date_sched, '%Y') DESC,DATE_FORMAT(date_sched, '%m') DESC, DATE_FORMAT(date_sched, '%d') DESC, DATE_FORMAT(date_sched, '%H') DESC, DATE_FORMAT(date_sched, '%i') DESC, DATE_FORMAT(date_sched, '%s') DESC";
-    $result = @mysql_query($query);
+if($row['course'] == "BS Information Technology major in Service Management"){$course2 = "ITSM";}
+else if($row['course'] == "BS Computer Science"){ $course2 = "CSAD";}
+else if($row['course'] == "Computer Network Administration") {$course2 = "CNA";}
+
+$for = $course_year.'-'.$section.$course2;
 
 
 ?>
@@ -24,19 +27,40 @@ $course = $row['course'];
         <h2>Calendar</h2>
         <ul data-role="listview" data-theme="d" data-divider-theme="d">
         <?php 
- while ($row = mysql_fetch_array($result)) {
+
+    $query5 = "SELECT * FROM tblsched_for WHERE sched_for = '$for'";
+    $result5 = @mysql_query($query5);
+
+    while ($row5 = mysql_fetch_array($result5)){
+        $id_schedule = $row5['id_schedule'];
+        $query = "SELECT * FROM tblschedule WHERE id_schedule = '$id_schedule' ORDER BY DATE_FORMAT(date_sched, '%Y') DESC,DATE_FORMAT(date_sched, '%m') DESC, DATE_FORMAT(date_sched, '%d') DESC, DATE_FORMAT(date_sched, '%H') DESC, DATE_FORMAT(date_sched, '%i') DESC, DATE_FORMAT(date_sched, '%s') DESC";
+        $result = @mysql_query($query);
+
+      
+
+     
+       while ($row = mysql_fetch_array($result)) {
+        $id_schedule = $row['id_schedule'];
+                      
                if( full_date(dateNow()) == full_date($row['date_sched']) ){ $today = "Today";} else { $today = "";}
                if(formatDate($row['date_editted']) != "0000-00-00") { $time = "<small>Editted:".full_time($row['date_editted']);} else { $time = "<small>Created:".full_time($row['date_created']);}
-                    echo '<li data-role="list-divider">'.full_date($row['date_sched']).' '.full_time($row['date_sched']).'<span class="ui-li-count">'.$today.'</span></li>';
+                  echo '<li data-role="list-divider">'.full_date($row['date_sched']).' '.full_time($row['date_sched']).'<span class="ui-li-count">'.$today.'</span></li>';
                   echo '<li>';
                   echo "    <h3>".$row['title']."</h3>";
                   echo "    <p><strong>Author: ".$row['author']."</strong></p>";
+                $query4 = "SELECT * FROM tblsched_for WHERE id_schedule = '$id_schedule' AND sched_for = '$for'";
+                $result4 = @mysql_query($query4);
+                    echo "    <p><strong>For: ";
+                  while ($row4 = mysql_fetch_array($result4)) {   
+                    echo $row4['sched_for'].',';
+                  }
+                    echo "</strong></p>";
                   echo "    <p>".$row['description']."</p>";
                   echo '    <p class="ui-li-aside"><strong>'.$time.'</strong></small></p>';
                
                   echo "  </a></li>";  
         }
-        
+    }
         ?>
 
         </ul>

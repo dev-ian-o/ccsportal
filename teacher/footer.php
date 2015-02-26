@@ -2,7 +2,7 @@
 	</body>
 </html>
 		<script type="text/javascript" src="../js/jquery.js"></script>		
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
+		<script type="text/javascript" src="../js/hammer.min.js"></script>
 		<script type="text/javascript" src="../js/jquery.mmenu.min.all.js"></script>
 		<script type="text/javascript">
 			$(function() {
@@ -67,6 +67,8 @@
 		<script>
         $(document).bind( "mobileinit", function(){
             $.mobile.ajaxEnabled = false;
+
+            $('.hidden').fadeIn(1000).removeClass('hidden');
         });            
         </script>
 		<script type="text/javascript" src="../js/jquery.mobile-1.3.2.min.js"></script>

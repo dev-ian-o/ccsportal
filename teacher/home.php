@@ -3,22 +3,31 @@
 <?php require_once("../includes/functions.php"); ?>
 <?php teacher_confirm_logged_in()?> 
 <?php require_once("header.php");?>	
+
 <?php
+$post_for = 'all';
+$subject_for = '';
+$subject_for2 = '';
+
+if(isset($_POST['submit2'])){
+    $post_for = $_POST['post_for'];
+    if(isset($_POST['subject_for'])) {$subject_for2 = $_POST['subject_for'];
+        $subject_for = "AND subject_for = '$subject_for2'";}
+    else{$subject_for = "";}
+}
+?>
+
+<?php
+
     function add_post($user_id,$level_user,$post,$date_post){
         $query = "INSERT INTO tblpost(id_user,level_user,post,date_post)
         VALUES  ('$user_id','$level_user','$post','$date_post')";
         $result = @mysql_query($query);
     }
-    if(isset($_POST['submit'])){
-        // $user_id = $_POST['user_id'];
-        // $post = $_POST['post'];
-        // $level_user = $_POST['level_user'];
-        // $date_post = dateNow_db_format();
-
-        // add_post($user_id,$level_user,$post,$date_post);
-    }
+    
 
  	$name = $row['firstname'].' '.$row['lastname'];
+    $id_teacher = $row['id_teacher'];
 ?>
 
 			<div id="content">
@@ -27,7 +36,64 @@
          				<div class="widget-body">
                             <div class="widget-main no-padding">
                                 <div class="dialogs">                                                
-          						<h3 style="font-family: Harlow Solid Italic;"><center>Newsfeed</center></h3>                                        		
+                                <h3 style="font-family: Harlow Solid Italic;"><center>Newsfeed</center>  
+                                <a href="#popupMenu" data-mini='true' data-rel="popup" data-role="button" data-inline="true" data-transition="slideup" data-icon="gear" data-theme="e">Sort By: 
+
+                                <?php echo ucwords($post_for).' '.$subject_for2;?>
+                                </a></h3>                                               
+
+                                <div data-role="popup" id="popupMenu" data-theme="d">
+                                        <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
+                                            <li data-role="divider" data-theme="e">Sort by:</li>
+                                          
+                                           <form method="post">
+                                               <input type="hidden" name="post_for" value="all">
+                                               <button type='submit' name='submit2'>All</button>
+                                           </form>
+                                          
+ 
+<?php 
+
+// if($row['yr'] == "first"){ $course_year = 1;}
+// if($row['yr'] == "second"){ $course_year = 2;}
+// if($row['yr'] == "third"){ $course_year = 3;}
+// if($row['yr'] == "fourth"){ $course_year = 4;}
+// $section = $row['section'];
+// $course = $row['course'];
+
+// if($row['course'] == "BS Information Technology major in Service Management"){$course2 = "ITSM";}
+// else if($row['course'] == "BS Computer Science"){ $course2 = "CSAD";}
+// else if($row['course'] == "Computer Network Administration") {$course2 = "CNA";}
+$what = 0;
+$arr_what = array();
+$query4 = "SELECT * FROM tblsem_sched WHERE teacher='$id_teacher'";
+$result4 = @mysql_query($query4);
+while($row4 = mysql_fetch_array($result4))
+{
+    if($row4['course'] == "BS Information Technology major in Service Management"){$course2 = "ITSM";}
+    else if($row4['course'] == "BS Computer Science"){ $course2 = "CSAD";}
+    else if($row4['course'] == "Computer Network Administration") {$course2 = "CNA";}
+
+    $section = $row4['course_year'].'-'.$row4['section'].$course2;
+    $subject = $row4['subject'];
+    $query5 = "SELECT * FROM tblsubject WHERE id_subject ='$subject'";
+    $result5 = @mysql_query($query5);
+    $row5 = mysql_fetch_array($result5);
+    $arr_what[$what] = $what;
+    echo '<form method="post" id="sortby'.$what++.'">';    
+    echo "<li>";
+    echo '<input type="hidden" name="post_for" value="'.$section.'">';
+    echo '<input type="hidden" name="subject_for" value="'.$row5['subject_desc'].'">';
+    echo '                                  <li><button type="submit" name="submit2">'.$row5['subject_desc'].'</button></li>';
+    echo '</form>';
+    
+
+}
+?>
+
+                                        </ul>
+                                </div>
+    <div id="edit"></div>
 
 	                                <div class="itemdiv dialogdiv">
 	                                    <div class="user">
@@ -42,7 +108,8 @@
 		                                     	
                                                  <?php echo '<input type="hidden" name="user_id" value="'.$row['id_teacher'].'">'; ?>
                                                  <?php echo '<input type="hidden" name="level_user" value="'.$_SESSION['level_user'].'">'; ?>
-
+                                                 <?php echo '<input type="hidden" name="post_for" value="'.$post_for.'">'; ?>
+                                                 <?php echo '<input type="hidden" name="subject_for" value="'.$subject_for2.'">'; ?>
 		                                     		<button type="submit" name="submit" data-role="button" data-corners="false" data-theme="b" data-shadow="false" data-mini="true">POST</button>
 		                                        </form>
 	                                        </div>
@@ -50,7 +117,7 @@
 <?php $id= ""; $level_user = ""; ?>
 <span id="newpost"></span>
 <?php
-$query2 = "SELECT * FROM tblpost ORDER BY DATE_FORMAT(date_post, '%d') DESC,DATE_FORMAT(date_post, '%Y') DESC,DATE_FORMAT(date_post, '%m') DESC, DATE_FORMAT(date_post, '%H') DESC, DATE_FORMAT(date_post, '%i') DESC, DATE_FORMAT(date_post, '%s') DESC";
+$query2 = "SELECT * FROM tblpost WHERE post_for = '$post_for' ".$subject_for." ORDER BY DATE_FORMAT(date_post, '%Y') DESC,DATE_FORMAT(date_post, '%m') DESC,DATE_FORMAT(date_post, '%d') DESC, DATE_FORMAT(date_post, '%H') DESC, DATE_FORMAT(date_post, '%i') DESC, DATE_FORMAT(date_post, '%s') DESC";
 $result2 = @mysql_query($query2);
 while($row2 = mysql_fetch_array($result2))
 {
@@ -116,7 +183,13 @@ while($row2 = mysql_fetch_array($result2))
                                                     echo '   <div class="body">';
                                                     echo '       <div class="time">';
                                                     echo '           <i class="icon-time"></i>';
-                                                    echo '           <span class="green">4 sec</span>';
+                                                    if(formatDate($row2['date_post']) == formatDate(dateNow())){
+                                                        $time = formatTime($row2['date_post']);
+                                                    } 
+                                                    else {
+                                                        $time = formatDate($row2['date_post']);
+                                                    }
+                                                    echo '           <span class="green">'.$time.'</span>';
                                                     echo '       </div>';
 
                                                     echo '       <div class="name">';

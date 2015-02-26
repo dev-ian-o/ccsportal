@@ -7,21 +7,203 @@
 
 
 <?php
+if(isset($_POST['editSchedule'])){
+	$title = $_POST['title'];
+	$place = $_POST['place'];
+	$date = formatDate($_POST['date']) .' '. formatTime($_POST['time']);
+	$time = $_POST['time'];
+	$desc = $_POST['desc'];
+	$for = $_POST['for'];
+	$id_schedule = $_POST['id_schedule'];
+
+	$query4 = "SELECT * FROM tblschedule WHERE title!='$title' AND date_sched='$date' AND id_schedule != '$id_schedule'";
+	$result4 = @mysql_query($query4);
+	$row4 = mysql_fetch_array($result4);
+	if($row4){
+		echo "<script>alert('Invalid Time! There is another schedule created with the same time.');</script>";
+	}
+	else{
+		if(($title != "") && ($place != "") && ($time != "") && ($for != "") && ($desc != ""))
+		{
+			if(formatDate($date) == dateNow())
+			{
+				if(timeNow() <= formatTime($time)){
+
+	                  $query5 = "SELECT * FROM tblsched_for WHERE id_schedule = '$id_schedule'";
+	                  $result5 = @mysql_query($query5);
+	                  $a = 0;
+	                while ($row5 = mysql_fetch_array($result5)){
+	                    $arr_section[$a] = $row5['sched_for'];
+	                    $a++;
+	                }
+
+					edit_schedule($id_schedule,$_POST['title'],$_POST['place'],$_POST['date'],$_POST['desc'],$_POST['time'].":00",$_SESSION['level_user']);
+					
+						$query = "DELETE FROM  tblsched_for WHERE id_schedule = '$id_schedule'";
+				        $result = @mysql_query($query);
+				    
+				    for($i=0; $i < count($for); $i++) { 
+					$for_now = $for[$i];
+			    	$query = "INSERT  INTO tblsched_for
+			    			(id_schedule,sched_for)
+					VALUES  ('$id_schedule','$for_now')";
+					$result = @mysql_query($query);
+		    		}
+					echo "<script>$('#message').html('<center>Schedule Modified.</center>'); $('#editschedule').hide();</script>";			
+			
+					echo "<script>setTimeout(function () {
+						$('#message').html('');
+						window.location.href= 'schedule.php';				
+					},3000);</script>";
+
+				}
+				else{
+					echo "<script>alert('Invalid Time! Time must not be later than the current time.');</script>";
+				}
+			}
+			else {
+
+		
+				      $query5 = "SELECT * FROM tblsched_for WHERE id_schedule = '$id_schedule'";
+	                  $result5 = @mysql_query($query5);
+	                  $a = 0;
+	                while ($row5 = mysql_fetch_array($result5)){
+	                    $arr_section[$a] = $row5['sched_for'];
+	                    $a++;
+	                }
+
+					edit_schedule($id_schedule,$_POST['title'],$_POST['place'],$_POST['date'],$_POST['desc'],$_POST['time'].":00",$_SESSION['level_user']);
+					
+						$query = "DELETE FROM  tblsched_for WHERE id_schedule = '$id_schedule'";
+				        $result = @mysql_query($query);
+				    for($i=0; $i < count($for); $i++) { 
+					$for_now = $for[$i];
+			    	$query = "INSERT  INTO tblsched_for
+			    			(id_schedule,sched_for)
+					VALUES  ('$id_schedule','$for_now')";
+					$result = @mysql_query($query);
+		    		}
+					echo "<script>$('#message').html('<center>Schedule Modified.</center>'); $('#editschedule').hide();</script>";			
+			
+					echo "<script>setTimeout(function () {
+						$('#message').html('');
+						window.location.href= 'schedule.php';				
+					},3000);</script>";
+
+			}	
+	} else{
+			echo "<script>alert('Please fill up all fields!');</script>";		
+	}
+	
+
+
+
+	}
+
+
+
+}
+
+if(isset($_POST['addSchedule'])){
+
+	$title = $_POST['title'];
+	$place = $_POST['place'];
+	$date = formatDate($_POST['date']) .' '. formatTime($_POST['time']);
+	$time = $_POST['time'];
+	$desc = $_POST['desc'];
+	$for = $_POST['for'];
+	
+	$query4 = "SELECT * FROM tblschedule WHERE title='$title' AND date_sched='$date'";
+	$result4 = @mysql_query($query4);
+	$row4 = mysql_fetch_array($result4);
+	if($row4){
+		echo "<script>alert('Schedule is already created!');</script>";
+	}
+	else{
+		if(($title != "") && ($place != "") && ($time != "") && ($for != "") && ($desc != ""))
+		{
+			if(formatDate($date) == dateNow())
+			{
+				if(formatTime(timeNow()) <= formatTime($time)){
+					add_schedule($_POST['title'],$_POST['place'],$_POST['date'],$_POST['desc'],$_POST['time'].":00",$_SESSION['level_user'],$_POST['id_user'],$_SESSION['level_user']);
+					$query4 = "SELECT * FROM tblschedule";
+					$result4 = @mysql_query($query4);
+					while ($row4 = mysql_fetch_array($result4)){
+						$id = $row4['id_schedule'];
+					}
+						for($i=0; $i < count($for); $i++) { 
+						$for_now = $for[$i];
+				    	$query = "INSERT  INTO tblsched_for
+				    			(id_schedule,sched_for)
+						VALUES  ('$id','$for_now')";
+						$result = @mysql_query($query);
+		    		}
+					echo $_SESSION['level_user'];
+					echo "<script>$('#message').html('<center>Schedule Saved.</center>'); $('#addschedule').hide();</script>";			
+			
+					echo "<script>setTimeout(function () {
+						$('#addsched').trigger('close');
+						$('#addschedule').show();
+						$('#message').html('');
+						window.location.href= 'schedule.php';				
+					},3000);</script>";
+
+				}
+				else{
+					echo "<script>alert('Invalid Time! Time must not be later than the current time.');</script>";
+				}
+			}
+			else {
+
+				add_schedule($_POST['title'],$_POST['place'],$_POST['date'],$_POST['desc'],$_POST['time'].":00",$_SESSION['level_user'],$_POST['id_user'],$_SESSION['level_user']);
+				$query4 = "SELECT * FROM tblschedule";
+				$result4 = @mysql_query($query4);
+				while ($row4 = mysql_fetch_array($result4)){
+					$id = $row4['id_schedule'];
+				}
+					for($i=0; $i < count($for); $i++) { 
+					$for_now = $for[$i];
+			    	$query = "INSERT  INTO tblsched_for
+			    			(id_schedule,sched_for)
+					VALUES  ('$id','$for_now')";
+					$result = @mysql_query($query);
+	    		}
+				echo $_SESSION['level_user'];
+				echo "<script>$('#message').html('<center>Schedule Saved.</center>'); $('#addschedule').hide();</script>";			
+		
+				echo "<script>setTimeout(function () {
+					$('#addsched').trigger('close');
+					$('#addschedule').show();
+					$('#message').html('');
+					window.location.href= 'schedule.php';				
+				},3000);</script>";
+
+			}	
+		}
+		else {
+			echo "<script>alert('Please fill up all fields!');</script>";
+		}
+	}
+
+}
 
 if(isset($_POST['post']) && isset($_POST['level_user']) && isset($_POST['user_id']))
 {
-	    function add_post($user_id,$level_user,$post,$date_post){
-        $query = "INSERT INTO tblpost(id_user,level_user,post,date_post)
-        VALUES  ('$user_id','$level_user','$post','$date_post')";
+	    function add_post($user_id,$level_user,$post,$date_post,$post_for,$subject_for){
+        $query = "INSERT INTO tblpost(id_user,level_user,post,date_post,post_for,subject_for)
+        VALUES  ('$user_id','$level_user','$post','$date_post','$post_for','$subject_for')";
         $result = @mysql_query($query);
     	}
 
     	$user_id = $_POST['user_id'];
         $post = $_POST['post'];
         $level_user = $_POST['level_user'];
+
+        $post_for = $_POST['post_for'];
+        $subject_for = $_POST['subject_for'];
         $date_post = dateNow_db_format();
 
-        add_post($user_id,$level_user,$post,$date_post);
+        add_post($user_id,$level_user,$post,$date_post,$post_for,$subject_for);
        $query2 = "SELECT * FROM tblpost WHERE id_user = '$user_id' AND level_user = '$level_user' AND post = '$post' AND date_post = '$date_post'
         ORDER BY DATE_FORMAT(date_post, '%d') DESC,DATE_FORMAT(date_post, '%Y') DESC,DATE_FORMAT(date_post, '%m') DESC, DATE_FORMAT(date_post, '%H') DESC, DATE_FORMAT(date_post, '%i') DESC, DATE_FORMAT(date_post, '%s') DESC";
 		$result2 = @mysql_query($query2);
@@ -90,7 +272,13 @@ if(isset($_POST['post']) && isset($_POST['level_user']) && isset($_POST['user_id
                                                     echo '   <div class="body">';
                                                     echo '       <div class="time">';
                                                     echo '           <i class="icon-time"></i>';
-                                                    echo '           <span class="green">4 sec</span>';
+                                                    if(formatDate($row2['date_post']) == formatDate(dateNow())){
+                                                        $time = formatTime($row2['date_post']);
+                                                    } 
+                                                    else {
+                                                        $time = formatDate($row2['date_post']);
+                                                    }
+                                                    echo '           <span class="green">'.$time.'</span>';
                                                     echo '       </div>';
 
                                                     echo '       <div class="name">';

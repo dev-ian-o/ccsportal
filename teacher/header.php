@@ -104,11 +104,14 @@ echo	'		}';
 			    padding: 20px;
 			    text-align: center;
 			}
+			.hidden{
+				display: none;
+			}
 		</style>
 
 
 	</head>
-	<body>
+	<body class="hidden">
 		<div id="page">
 			<div id="header">
 				<a href="#menu"></a>

@@ -107,11 +107,14 @@ table{
         #error{
             text-align: center;
         }
+        .hidden{
+          display: none;
+        }
   </style>
 
   
 </head>
-<body>
+<body class="hidden">
 <div data-role="page" class="ui-responsive-panel" id="page1">
 
             <h1 style="font-family: Corbel;"><b><center>UMak-CCS App</center></b></h1>
@@ -159,7 +162,11 @@ table{
 <script>
         $(document).bind( "mobileinit", function(){
             $.mobile.ajaxEnabled = false;
+
         });            
+        $(function() {
+            $('.hidden').fadeIn(1000).removeClass('hidden');
+        });
 </script>
 <script src="js/jquery.mobile-1.3.2.min.js"></script>
 <script src="js/jquery.validate.min.js"></script>

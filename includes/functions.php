@@ -106,7 +106,7 @@
 	    	$_SESSION['level_user'] = "admin";
 	    	redirect_to("admin/ua_student.php");
  	    }
- 	    else { echo "<script>alert('ian');</script>";}    
+ 	    else {}    
 	}
 	function randomPassword() {
     $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
@@ -274,7 +274,7 @@ function addua_student($lastname,$firstname,$middlename,$dob,$add_no,$add_street
         
     	$query = "INSERT  INTO tblstudent
     			(lastname,firstname,middlename,dob,add_no,add_street,add_brgy,add_city,contact_no,gender,student_no,yr,section,course,password,image)
-		VALUES  ('$lastname','$firstname','$middlename','$dob','$add_no','$add_str','$add_brgy','$city','$contactno','$gender','$student_no','$yr','$section','$course','$password','$image')";
+		VALUES  ('$lastname','$firstname','$middlename','$dob','$add_no','$add_street','$add_brgy','$add_city','$contactno','$gender','$student_no','$yr','$section','$course','$password','$image')";
 		$result = @mysql_query($query);
     }
 function addua_teacher($lastname,$firstname,$middlename,$dob,$add_no,$add_street,$add_brgy,$add_city,$contactno,$gender,$employee_no,$password,$image,$emailadd){
@@ -294,7 +294,7 @@ function full_time($date){
 
 function formatTime($time){
             return date("H:i", strtotime($time));    
-}
+}	
 function formatDate($date){
             return date("Y-m-d", strtotime($date));    
 }
@@ -328,13 +328,13 @@ function get_Author($author){
 
 }
 
-function add_schedule($title,$place,$date,$desc,$time,$author){
+function add_schedule($title,$place,$date,$desc,$time,$author,$id_user,$level_user){
 		$author = get_Author($author);
         $created = dateNow_db_format();
         $date .= " ";
         $date .= $time;
-        $query = "INSERT INTO tblschedule(title,place,date_sched,description,date_created,author)
-        VALUES  ('$title','$place','$date','$desc','$created','$author')";
+        $query = "INSERT INTO tblschedule(title,place,date_sched,description,date_created,author,id_user,level_user)
+        VALUES  ('$title','$place','$date','$desc','$created','$author','$id_user','$level_user')";
         $result = @mysql_query($query);
 }
 function edit_schedule($id,$title,$place,$date,$desc,$time,$author){

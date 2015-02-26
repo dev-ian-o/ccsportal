@@ -8,6 +8,15 @@
 <div class="row-fluid">
             <div class="span10 offset1">
                 <section class="widget">
+                    <header><h4>NEWSFEED</h4>
+</header>
+<iframe src="newsfeed.php" width="1000px" height="300px"></iframe>
+</section>
+</div>
+</div>
+<div class="row-fluid">
+            <div class="span10 offset1">
+                <section class="widget">
                     <header>
                 
                         <h4>

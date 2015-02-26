@@ -1,6 +1,5 @@
-
-  $(document).ready(function() {
-                            /*AJAX THE FORM*/      
+    $(document).ready(function() {
+      /*AJAX THE FORM*/      
         $('#form_pass').submit(function(){
             
             postData = $('#form_pass').serialize();
@@ -77,6 +76,9 @@
                         "required" : true }
                 } //rules
         });
+        $("#addschedule").validate();
+        $("#editschedule").validate();
+
 
     }); //document ready
  

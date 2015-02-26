@@ -23,15 +23,15 @@ if($course_year == 4){ $course_year = 'fourth';}
 ?>
 <?php 
 
-function add_grades($subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading)
+function add_grades($subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading,$status)
 {
 
-    $query = "INSERT INTO tblgrades(subject,school_year,midterm_grade,finalterm_grade,sem_grade,id_student,id_teacher,midterm_grading,finalgrading)
-    VALUES  ('$subject','$school_year','$midterm_grade','$finalterm_grade','$sem_grade','$id_student','$id_teacher','$midterm_grading','$finalgrading')";
+    $query = "INSERT INTO tblgrades(subject,school_year,midterm_grade,finalterm_grade,sem_grade,id_student,id_teacher,midterm_grading,finalgrading,status)
+    VALUES  ('$subject','$school_year','$midterm_grade','$finalterm_grade','$sem_grade','$id_student','$id_teacher','$midterm_grading','$finalgrading','$status')";
     $result = @mysql_query($query);
                 
 }
-function edit_grades($id_grades,$subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading)
+function edit_grades($id_grades,$subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading,$status)
 {
 
     $query = "UPDATE tblgrades SET 
@@ -43,6 +43,7 @@ function edit_grades($id_grades,$subject,$school_year,$midterm_grade,$finalterm_
         id_student = '$id_student',
         midterm_grading = '$midterm_grading',
         finalgrading = '$finalgrading',
+        status = '$status',
         id_teacher = '$id_teacher'
         WHERE id_grades = '$id_grades'";    
     $result = @mysql_query($query);
@@ -60,31 +61,19 @@ if(isset($_POST['submit']))
     if(isset($_POST['midterm_grading'])){ $midterm_grading = $_POST['midterm_grading']; } else { $midterm_grading = "";}
     if(isset($_POST['finalgrading'])){ $finalgrading = $_POST['finalgrading']; } else { $finalgrading = "";}
     if(isset($_POST['sem_grade'])){ $sem_grade = $_POST['sem_grade']; } else { $sem_grade = "";}
+    $status = $_POST['status'];
     if($_POST['id_grades'] != '')
     {
-        edit_grades($_POST['id_grades'],$id_subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading);
+        edit_grades($_POST['id_grades'],$id_subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading,$status);
     }
     else
     {
         if(!empty($_POST['midterm']))
         {
-            add_grades($id_subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading);        
+            add_grades($id_subject,$school_year,$midterm_grade,$finalterm_grade,$sem_grade,$id_student,$id_teacher,$midterm_grading,$finalgrading,$status);        
         }
     }
 }
-if(isset($_POST['submit2']))
-{
-
-    if(isset($_POST['mgrade'])){ $midterm_grading = $_POST['mgrade']; } else { $midterm_grading = "";}
-    if(isset($_POST['fgrade'])){ $finalgrading = $_POST['fgrade']; } else { $finalgrading = "";}
-    
-        $query = "UPDATE tblgrades SET
-        midterm_grading = '$midterm_grading',
-        finalgrading = '$finalgrading'
-        WHERE id_teacher = '$id_teacher'        AND subject='$id_subject'";    
-    $result = @mysql_query($query);
-}
-//line of codes for today is 131.. 3 more functions to go..  newsfeed(withnotifiicationlfb) and notification plus the wall of fame and design.. maybe ny sunday tapos na to..
 ?>
 <div id="content">
 <h3 style="font-family: Harlow Solid Italic;"><center>Edit Records</center></h3>        
@@ -104,27 +93,6 @@ if(isset($_POST['submit2']))
     }
 ?>
 <div class="table-responsive">
-    <form method="post">
-    <table class="table" id="grading">
-            <thead>
-                <td colspan="2">Grading</td>
-            </thead>
-            <tr>
-                <td>Midterm</td>
-
-                <td><input type="text" name="mgrade" required <?php echo "value='".$row6['midterm_grading']."'";?>></td>
-            </tr>
-            <tr>
-                <td>Final Term</td>
-                <td><input type="text" name="fgrade" required <?php echo "value='".$row6['finalgrading']."'";?>></td>
-            </tr>
-            <tr>
-                <td colspan="2"><center><button type="submit" class="btn" name="submit2">OK</button></center></td>
-            </tr>
-    </table>
-    </form>
-</div>
-<div class="table-responsive">
 <center>
 <table class="table">
         <thead>
@@ -132,6 +100,7 @@ if(isset($_POST['submit2']))
             <th>Midterm Grade</th>
             <th>Finalterm Grade</th>
             <th>Sem. Grade</th>
+            <th>Status</th>
             <th></th>
         </thead>
         <tbody>
@@ -154,35 +123,57 @@ if(isset($_POST['submit2']))
                 $result3 = @mysql_query($query3);
                 $row3 = mysql_fetch_array($result3);
 
+                if($row3['status'] == 'ok'){ $selected1 = "selected";} else {$selected1 = "";}
+                if($row3['status'] == 'incomplete'){ $selected2 = "selected";} else {$selected2 = "";}
+                if($row3['status'] == 'unofficially drop'){ $selected3 = "selected";} else {$selected3 = "";}
+                if($row3['status'] == 'drop'){ $selected4 = "selected";} else {$selected4 = "";}
 
                 if(isset($row3['id_grades']))   { $id_grades = $row3['id_grades'];} else{ $id_grades = "";}
-                if(isset($row3['finalterm_grade']))   { $finalterm = $row3['finalterm_grade'];} else{ $finalterm = "0";}
-                if(isset($row3['midterm_grade']))   { $midterm = $row3['midterm_grade'];} else{ $midterm = "0";}
+                if(isset($row3['finalterm_grade']))   { 
+                    $finalterm = $row3['finalterm_grade']; 
+                    if($finalterm > 3) {$class1 = "danger";} else if($finalterm <= 3) { $class1 = "success";}
+                } else{ $finalterm = "0"; $class1 = "";}
+                if(isset($row3['midterm_grade']))   { 
+                    $midterm = $row3['midterm_grade'];
+                    if($midterm > 3) {$class2 = "danger";} else if($midterm <= 3) { $class2 = "success";}
+                } else{ $midterm = "0"; $class2 = ""; }
+                if(isset($row3['sem_grade']))   { 
+                    $sem_grade = $row3['sem_grade'];
+                    if($sem_grade > 3) {$class3 = "danger";} else if($sem_grade <= 3) { $class3 = "success";}
+                } else{ $sem_grade = "0"; $class3 = "";}
                 
-                $finalgrade = ($midterm * (0.01*$row6['midterm_grading'])) +  ($finalterm * (0.01*$row6['finalgrading']));
+                // $finalgrade = ($midterm * (0.01*$row6['midterm_grading'])) +  ($finalterm * (0.01*$row6['finalgrading']));
                 echo "<form method='post' id='grades'> ";
                 echo "<tr>";
                 echo "      <th>".strtoupper($row['lastname']).', '.strtoupper($row['firstname'])."</th>";
 
-                echo "      <td><input type='text' name='midterm' value='".number_format($midterm,1)."' style='width: 70px; height: 30px;'></td>"; 
-                echo "      <td><input type='text' name='finalterm' value='".number_format($finalterm,1)."' style='width: 70px; height: 30px;'></td>";
-                echo "<td>
-                        ".$finalgrade."
+                echo "      <td class='".$class2."'><input type='text' name='midterm' value='".number_format($midterm,1)."' style='width: 70px; height: 30px;'></td>"; 
+                echo "      <td class='".$class1."'><input type='text' name='finalterm' value='".number_format($finalterm,1)."' style='width: 70px; height: 30px;'></td>";
+                echo "<td class='".$class3."'>
+                        <input type='text' name='sem_grade' value='".number_format($sem_grade,1)."' style='width: 70px; height: 30px;'>
                         <input type='hidden' name='id_student' value='".$id_student."'>
                         <input type='hidden' name='id_grades' value='".$id_grades."'>
                         <input type='hidden' name='id_teacher' value='".$id_teacher."'>
                         <input type='hidden' name='school_year' value='".$school_year."'>
                         <input type='hidden' name='midterm_grading' value='".$row6['midterm_grading']."'>
                         <input type='hidden' name='finalgrading' value='".$row6['finalgrading']."'>
-                        <input type='hidden' name='sem_grade' value='".$finalgrade."'>
+                        
                     </td>";
+                echo '   <td>
+                <select class="form-control" name="status" style="width: 100px;">
+    <option value="ok" '.$selected1.'>OK</option>
+    <option value="incomplete" '.$selected2.'>INC</option>
+    <option value="unofficially drop" '.$selected3.'>UD</option>
+    <option value="drop" '.$selected4.'>DROP</option>
+</select>
+                        </td>';    
                 echo "      <td>";
                 echo "      <button type='submit' name='submit' class='btn btn-success'>OK</button>";
                 echo "      </td>"; 
                 echo "</tr>";
                 echo "</form>";
             }
-        ?>
+        ?>  
         </tbody>
 </table>
 </center>
@@ -222,78 +213,15 @@ if(isset($_POST['submit2']))
                     position    : 'left',
                     classes     : 'mm-light'
                 });
-
-                $('div#aboutme').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#third').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#myschedule').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-                $('div#addsched').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });
-<?php
-    $id = $_SESSION['teacher_id'];
-    $query = "SELECT id_sem_sched,subject,section,course_year,course,teacher FROM tblsem_sched WHERE teacher ='$id'";
-    $result = @mysql_query($query);
-    $a = 1;
-    while($row = mysql_fetch_array($result))
-    {
-        $section = "section".$a;
-        $a++;
-        echo "$('div#".$section."').mmenu({
-                    classes     : 'mm-fullscreen mm-light',
-                    position    : 'right',
-                    zposition   : 'front',
-                    header      : true
-                });";
-    }
-
-?>
+            $('.hidden').fadeIn(1000).removeClass('hidden');
+                
        });
         </script>
         <script>
         $(document).bind( "mobileinit", function(){
             $.mobile.ajaxEnabled = false;
+
         });            
         </script>        
         <script src="../js/jquery.validate.min.js"></script>
         <script src="../js/ajax_script.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-    
-        $(".mm-prev").click(function(){
-            <?php
-    $id = $_SESSION['teacher_id'];
-    $query = "SELECT id_sem_sched,subject,section,course_year,course,teacher FROM tblsem_sched WHERE teacher ='$id'";
-    $result = @mysql_query($query);
-    $a = 1;
-    while($row = mysql_fetch_array($result))
-    {
-        
-        $section = "section".$a;     
-        $a++;
-        echo "$('#".$section."').trigger('close');";
-    }
-
-?>
-        
-        });
-    });
-</script>
-
